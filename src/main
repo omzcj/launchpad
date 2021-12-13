@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+
+if [ ! -f "/usr/local/bin/fd" ]; then
+	echo "fd not installed"
+	exit 1
+fi
+
+if [[ $1 == "backup" ]]; then
+	cp -rf $(fd com.apple.dock.launchpad /private/var/folders)/db ~/.launchpad
+	echo "backup success"
+elif [[ $1 == "restore" ]]; then
+	cp -rf ~/.launchpad/db $(fd com.apple.dock.launchpad /private/var/folders) && killall Dock
+	echo "restore success"
+elif [[ $1 == "reset" ]]; then
+	rm $(fd com.apple.dock.launchpad /private/var/folders)/db/db
+	defaults write com.apple.dock ResetLaunchPad -bool true && killall Dock
+	echo "reset success"
+elif [[ $1 == "sort" ]]; then
+	IFS="|"
+	current_group=0
+	current_index=0
+	sqlite3 $(fd com.apple.dock.launchpad /private/var/folders)/db/db "select rowid, parent_id from apps join items on item_id = rowid where parent_id > 178 and parent_id != 199 order by parent_id, title;" | while read line
+	do
+		array=(${line})
+		if [[ ${current_group} != ${array[1]} ]];then
+			current_group=${array[1]}
+			current_index=0
+		fi
+		sqlite3 $(fd com.apple.dock.launchpad /private/var/folders)/db/db "update items set ordering = ${current_index} where rowid = ${array[0]}"
+		current_index=$[current_index + 1]
+	done
+	killall Dock
+	echo "sort success"
+else
+	echo "launchpad 1.0"
+	echo
+	echo "Usage:"
+	echo "  launchpad backup"
+	echo "  launchpad retore"
+	echo "  launchpad reset"
+	echo "  launchpad sort"
+	exit 1
+fi
