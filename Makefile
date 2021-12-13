@@ -1,3 +1,3 @@
-launchpad:
+build:
 	mkdir bin
 	cp src/main bin/launchpad
