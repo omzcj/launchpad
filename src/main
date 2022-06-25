@@ -9,7 +9,7 @@ if [[ $1 == "backup" ]]; then
 	cp -rf $(fd com.apple.dock.launchpad /private/var/folders)/db ~/.launchpad
 	echo "backup success"
 elif [[ $1 == "restore" ]]; then
-	cp -rf ~/.launchpad/db $(fd com.apple.dock.launchpad /private/var/folders) && killall Dock
+	cp -rf ~/.launchpad/* $(fd com.apple.dock.launchpad /private/var/folders)/db && killall Dock
 	echo "restore success"
 elif [[ $1 == "reset" ]]; then
 	rm $(fd com.apple.dock.launchpad /private/var/folders)/db/db
@@ -36,7 +36,7 @@ else
 	echo
 	echo "Usage:"
 	echo "  launchpad backup"
-	echo "  launchpad retore"
+	echo "  launchpad restore"
 	echo "  launchpad reset"
 	echo "  launchpad sort"
 	exit 1
