@@ -6,10 +6,10 @@ if [ ! -f "/usr/local/bin/fd" ]; then
 fi
 
 if [[ $1 == "backup" ]]; then
-	cp -rf $(fd com.apple.dock.launchpad /private/var/folders)/db ~/.launchpad
+	cp -rf $(fd com.apple.dock.launchpad /private/var/folders)/db/db ~/.launchpad
 	echo "backup success"
 elif [[ $1 == "restore" ]]; then
-	cp -rf ~/.launchpad/* $(fd com.apple.dock.launchpad /private/var/folders)/db && killall Dock
+	cp -rf ~/.launchpad $(fd com.apple.dock.launchpad /private/var/folders)/db/db && killall Dock
 	echo "restore success"
 elif [[ $1 == "reset" ]]; then
 	rm $(fd com.apple.dock.launchpad /private/var/folders)/db/db
